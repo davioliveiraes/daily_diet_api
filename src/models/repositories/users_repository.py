@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from sqlite3 import Connection
 
 class UsersRepository:
@@ -21,3 +21,34 @@ class UsersRepository:
          )
       )
       self.__conn.commit()
+   
+   def find_user_by_id(self, user_id: str) -> Tuple:
+      cursor = self.__conn.cursor()
+      cursor.execute(
+         '''
+         SELECT * FROM users WHERE id = ?
+         ''', (user_id, )
+      )
+      user = cursor.fetchone()
+      return user
+
+   def find_user_by_email(self, email: str) -> Tuple:
+      cursor = self.__conn.cursor()
+      cursor.execute(
+         '''
+         SELECT * FROM users WHERE email = ?
+         ''', (email, )
+      )
+      user = cursor.fetchone()
+      return user
+
+   def find_all_users(self) -> List:
+      cursor = self.__conn.cursor()
+      cursor.execute(
+         '''
+         SELECT * FROM users ORDER BY created_at DESC
+         '''
+      )
+      users = cursor.fetchall()
+      return users
+   
