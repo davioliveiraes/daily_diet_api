@@ -93,9 +93,108 @@ class MealsRepository:
       meals = cursor.fetchall()
       return meals
 
+   def update_meal(self, meal_id: str, meal_infos: Dict):
+      cursor = self.__conn.cursor()
+      cursor.execute(
+         '''
+         UPDATE meals
+         SET name = ?, description = ?, datetime = ?, is_on_diet = ?, updated_at = ?
+         WHERE id = ?
+         ''', (
+            meal_infos["name"],
+            meal_infos["description"],
+            meal_infos["datetime"],
+            meal_infos["is_on_diet"],
+            meal_infos["updated_at"],
+            meal_id
+         )
+      )
+      self.__conn.commit()
    
+   def delete_meal(self, meal_id: str) -> None:
+      cursor = self.__conn.cursor()
 
+      # remove_vinculo_user_meals_primeiro
+      cursor.execute(
+         '''
+         DELETE FROM user_meals WHERE id = ?
+         ''', (meal_id, )
+      )
+
+      # remove_refeicao
+      cursor.execute(
+         '''
+         DELETE FROM meals WHERE id = ?
+         ''', (meal_id, )
+      )
+
+      self.__conn.commit()
+   
+   def get_user_diet_statistics(self, user_id: str) -> Dict:
+      cursor = self.__conn.cursor()
+
+      # total_de_refeicoes_do_usuario
+      cursor.execute(
+         '''
+         SELECT COUNT(*) FROM meals m
+         INNER JOIN user_meals um ON m.id = um.meal_id
+         WHERE um.user_id = ?
+         ''', (user_id, )
+      )
+      total_meals = cursor.fetchone()[0]
+
+      # refeicoes_dentro_da_dieta
+      cursor.execute(
+         '''
+         SELECT COUNT(*) FROM meals m
+         INNER JOIN user_meals um ON m.id = um.meal_id
+         WHERE um.user_id = ? AND m.is_on_diet = 1
+         ''', (user_id, )
+      )
+      meals_on_diet = cursor.fetchone()[0]
+
+      # refeicoes_fora_da_dieta
+      cursor.execute(
+         '''
+         SELECT COUNT(*) FROM meals m
+         INNER JOIN user_meals um ON m.id = um.meal_id
+         WHERE um.user_id = ? AND m.is_on_diet = 0
+         ''', (user_id, )
+      )
+      meals_off_diet = cursor.fetchone()[0]
+
+      cursor.execute(
+         '''
+         SELECT m.is_on_diet FROM meals m
+         INNER JOIN user_meals um ON m.id = um.meal_id
+         WHERE um.user_id = ?
+         ORDER BY m.datetime
+         ''', (user_id, )
+      )
+
+      diet_sequence = [row[0] for row in cursor.fetchall()]
+      best_sequence = self.__calculate_best_diet_sequence(diet_sequence)
+
+      return {
+         "total_meals": total_meals,
+         "meals_on_diet": meals_on_diet,
+         "meals_off_diet": meals_off_diet,
+         "best_sequence": best_sequence,
+         "diet_percentage": round((meals_on_diet / total_meals * 100), 2) if total_meals > 0 else 0
+      }
+   
+   def __calculate_best_diet_sequence(self, diet_sequence: list) -> int:
+      if not diet_sequence:
+         return 0
       
-   
+      max_sequence = 0
+      current_sequence = 0
 
+      for is_on_diet in diet_sequence:
+         if is_on_diet == 1:
+            current_sequence += 1
+            max_sequence = max(max_sequence, current_sequence)
+         else:
+            current_sequence = 0
 
+      return max_sequence
