@@ -88,7 +88,7 @@ class MealsController:
          return False, ["Usuário não encontrado"]
 
       try:
-         meals = self.__meals_respository.find_meals_on_diet_by_user_id(user_id)
+         meals = self.__meals_respository.find_meals_by_user_id(user_id)
          return True, meals
       except Exception as e:
          return False, [f"Erro ao buscar refeições: {str(e)}"]
