@@ -114,21 +114,26 @@ class MealsRepository:
    def delete_meal(self, meal_id: str) -> None:
       cursor = self.__conn.cursor()
 
-      # remove_vinculo_user_meals_primeiro
-      cursor.execute(
-         '''
-         DELETE FROM user_meals WHERE id = ?
-         ''', (meal_id, )
-      )
+      try:
+         # remove_vinculo_user_meals_primeiro
+         cursor.execute(
+            '''
+            DELETE FROM user_meals WHERE meal_id = ?
+            ''', (meal_id, )
+         )
 
-      # remove_refeicao
-      cursor.execute(
-         '''
-         DELETE FROM meals WHERE id = ?
-         ''', (meal_id, )
-      )
+         # remove_refeicao
+         cursor.execute(
+            '''
+            DELETE FROM meals WHERE id = ?
+            ''', (meal_id, )
+         )
 
-      self.__conn.commit()
+         self.__conn.commit()
+      
+      except Exception as e:
+         self.__conn.rollback()
+         raise e
    
    def get_user_diet_statistics(self, user_id: str) -> Dict:
       cursor = self.__conn.cursor()
