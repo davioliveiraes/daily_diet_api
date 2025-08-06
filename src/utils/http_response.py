@@ -30,7 +30,7 @@ class HttpResponse:
    
    @staticmethod
    def bad_request(errors: Union[List[str], None] = None, message: str = 'Dados invalidos') -> Tuple[Response, int]:
-      """Resposta de erro 404 padronizada"""
+      """Resposta de erro 400 padronizada"""
       response = {
          "success": False,
          "message": message
@@ -39,7 +39,7 @@ class HttpResponse:
       if errors:
          response["errors"] = errors
       
-      return jsonify(response), 401
+      return jsonify(response), 400
    
    @staticmethod
    def not_found(message: str = "Recurso nao encontrado") -> Tuple[Response, int]:

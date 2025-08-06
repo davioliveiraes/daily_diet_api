@@ -23,7 +23,7 @@ class MealsController:
       
       user = self.__users_repository.find_user_by_id(user_id)
       if not user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
       
       meal_id = str(uuid.uuid4())
       user_meal_id = str(uuid.uuid4())
@@ -55,7 +55,7 @@ class MealsController:
          created_meal = self.__meals_respository.find_meal_by_id(meal_id)
          return True, created_meal
       except Exception as e:
-         return False, [f"Erro ao criar refeição: {str(e)}"]
+         return False, [f"Erro ao criar refeicao: {str(e)}"]
    
    def find_meal_by_id(self, meal_id: str, user_id: str) -> Tuple:
       meal_validation = self.__meal_validator.validate_meal_id(meal_id)
@@ -71,12 +71,12 @@ class MealsController:
          meal_ids = [meal[0] for meal in user_meals]
 
          if meal_id not in meal_ids:
-            return False, ["Refeição não encontrada ou não pertence ao usuário"]
+            return False, ["Refeicao nao encontrada ou nao pertence ao usuário"]
          
          meal = self.__meals_respository.find_meal_by_id(meal_id)
          return True, meal
       except Exception as e:
-         return False, [f"Erro ao buscar refeição: {str(e)}"]
+         return False, [f"Erro ao buscar refeicao: {str(e)}"]
    
    def find_meals_by_user_id(self, user_id: str) -> Tuple:
       validation = self.__meal_validator.validate_user_id(user_id)
@@ -85,7 +85,7 @@ class MealsController:
 
       user = self.__users_repository.find_user_by_id(user_id)
       if not user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
 
       try:
          meals = self.__meals_respository.find_meals_by_user_id(user_id)
@@ -100,7 +100,7 @@ class MealsController:
       
       user = self.__users_repository.find_user_by_id(user_id)
       if not user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
 
       try:
          meals = self.__meals_respository.find_meals_on_diet_by_user_id(user_id)
@@ -115,7 +115,7 @@ class MealsController:
       
       user = self.__users_repository.find_user_by_id(user_id)
       if not user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
       
       try:
          meals = self.__meals_respository.find_meals_off_diet_by_user_id(user_id)
@@ -140,7 +140,7 @@ class MealsController:
       meal_ids = [meal[0] for meal in user_meals]
 
       if meal_id not in meal_ids:
-         return False, ["Refeição não encontrada ou não pertence ao usuário"]
+         return False, ["Refeicao nao encontrada ou nao pertence ao usuário"]
       
       existing_meal = self.__meals_respository.find_meal_by_id(meal_id)
       update_data = {
@@ -156,7 +156,7 @@ class MealsController:
          updated_meal = self.__meals_respository.find_meal_by_id(meal_id)
          return True, updated_meal
       except Exception as e:
-         return False, [f"Erro ao atualizar refeição: {str(e)}"]
+         return False, [f"Erro ao atualizar refeicao: {str(e)}"]
    
    def delete_meal(self, meal_id: str, user_id: str) -> Tuple:
       meal_validation = self.__meal_validator.validate_meal_id(meal_id)
@@ -171,13 +171,13 @@ class MealsController:
       meal_ids = [meal[0] for meal in user_meals]
 
       if meal_id not in meal_ids:
-         return False, ["Refeição não encontrada ou não pertence a dieta"]
+         return False, ["Refeicao nao encontrada ou nao pertence a dieta"]
       
       try:
          self.__meals_respository.delete_meal(meal_id)
-         return True, ["Refeição deletada com sucesso"]
+         return True, ["refeicao deletada com sucesso"]
       except Exception as e:
-         return False, [f"Erro ao deletar refeição: {str(e)}"]
+         return False, [f"Erro ao deletar refeicao: {str(e)}"]
    
    def get_user_diet_statistics(self, user_id: str) -> Tuple:
       validation = self.__meal_validator.validate_user_id(user_id)
@@ -186,7 +186,7 @@ class MealsController:
       
       user = self.__users_repository.find_user_by_id(user_id)
       if not user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
 
       try:
          statistics = self.__meals_respository.get_user_diet_statistics(user_id)

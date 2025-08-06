@@ -17,7 +17,7 @@ class UsersController:
 
       existing_user = self.__users_repository.find_user_by_email(user_infos["email"])
       if existing_user:
-         return False, ["Email já está em uso."]
+         return False, ["Email ja esta em uso."]
 
       user_data = {
          "id": str(uuid.uuid4()),
@@ -31,7 +31,7 @@ class UsersController:
          created_user = self.__users_repository.find_user_by_id(user_data["id"])
          return True, created_user
       except Exception as e:
-         return False, [f"Erro ao criar usuário: {str(e)}"]
+         return False, [f"Erro ao criar usuario: {str(e)}"]
    
    def find_user_by_id(self, user_id: str) -> Tuple:
       validation = self.__user_validator.validate_user_id(user_id)
@@ -41,29 +41,29 @@ class UsersController:
       try:
          user = self.__users_repository.find_user_by_id(user_id)
          if not user:
-            return False, ["Usuário não encontrado"]
+            return False, ["Usuario nao encontrado"]
          return True, user
       except Exception as e:
-         return False, [f"Erro ao buscar usuário: {str(e)}"]
+         return False, [f"Erro ao buscar usuario: {str(e)}"]
    
    def find_user_by_email(self, email: str) -> Tuple:
       if not email or not email.strip():
-         return False, ["Email é obrigatório."]
+         return False, ["Email e obrigatorio."]
       
       try:
          user = self.__users_repository.find_user_by_email(email.strip().lower())
          if not user:
-            return False, ["Usuário não encontrando"]
+            return False, ["Usuario nao encontrando"]
          return True, user
       except Exception as e:
-         return False, [f"Erro ao buscar usuário: {str(e)}"]
+         return False, [f"Erro ao buscar usuario: {str(e)}"]
    
    def find_all_users(self) -> Tuple:
       try:
          users = self.__users_repository.find_all_users()
          return True, users
       except Exception as e:
-         return False, [f"Erro ao listar usuários: {str(e)}"]
+         return False, [f"Erro ao listar usuarios: {str(e)}"]
    
    def update_user(self, user_id: str, user_infos: Dict) -> Tuple:
       id_validation = self.__user_validator.validate_user_id(user_id)
@@ -76,12 +76,12 @@ class UsersController:
       
       existing_user = self.__users_repository.find_user_by_id(user_id)
       if not existing_user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
 
       if "email" in user_infos:
          email_user = self.__users_repository.find_user_by_email(user_infos["email"])
          if email_user and email_user[0] != user_id:
-            return False, ["Email já está em uso."]
+            return False, ["Email ja esta em uso."]
 
       update_data = {}
       if "name" in user_infos:
@@ -94,7 +94,7 @@ class UsersController:
          updated_user = self.__users_repository.find_user_by_id(user_id)
          return True, updated_user
       except Exception as e:
-         return False, [f"Erro ao atualizar usuário: {str(e)}"]
+         return False, [f"Erro ao atualizar usuario: {str(e)}"]
    
    def delete_user(self, user_id: str) -> Tuple:
       validation = self.__user_validator.validate_user_id(user_id)
@@ -103,10 +103,10 @@ class UsersController:
 
       existing_user = self.__users_repository.find_user_by_id(user_id)
       if not existing_user:
-         return False, ["Usuário não encontrado"]
+         return False, ["Usuario nao encontrado"]
       
       try:
          self.__users_repository.delete_user(user_id)
-         return True, ["Usuário deletado com sucesso"]
+         return True, ["Usuario deletado com sucesso"]
       except Exception as e:
-         return False, [f"Erro ao deletar usuário: {str(e)}"]
+         return False, [f"Erro ao deletar usuario: {str(e)}"]
